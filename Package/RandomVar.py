@@ -68,18 +68,24 @@ class RandomVar:
         for line in fileinput.FileInput(FShellHplder,inplace=1):
             if '_16' in line :
                 line = line.replace('_16','_'+self.ListVar[15]) 
-            if '_17' in line :
+            elif '_17' in line :
                 line = line.replace('_17','_'+self.ListVar[16])
-            if '_18' in line :
+            elif '_18' in line :
                 line = line.replace('_18','_'+self.ListVar[17])        
             print(line,end=''),
         for line in fileinput.FileInput(FShellHplder,inplace=1):
             if '_13' in line :
                 line = line.replace('_13','_'+self.ListVar[12])
-            if 'def __init__(self):' in line:
+            elif 'def __init__(self):' in line:
                line = line.replace('def __init__(self):','def __init__(self,'+'_'+self.ListVar[15]+'='+'_'+self.ListVar[15]+'):')       
-            print(line,end=''),          
-        Pattern = '_'+self.ListVar[15]+'  =   b""'    
+            print(line,end=''),  
+        for line in fileinput.FileInput(FShellHplder,inplace=1):
+            if '_17' in line :
+                line = line.replace('_17','_'+self.ListVar[16])
+            elif '_18' in line :
+                line = line.replace('_18','_'+self.ListVar[17])        
+            print(line,end=''),            
+        Pattern = '_'+self.ListVar[15].strip()+'  =   b""'    
         with open( os.getcwd()+'/Package/Template/TempPayloadLoader.txt','rt') as CopyShell:
             CopyShell = CopyShell.read().replace(Pattern,self.ExploitRename)
         with open( os.getcwd()+'/Package/Template/TempPayloadLoader.txt','wt') as ReCopyShell:
