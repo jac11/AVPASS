@@ -2,9 +2,11 @@
 
 import re
 import os
+import time 
 import sys
 import shutil
 import subprocess  
+import argparse
 import pathlib
 from subprocess import  PIPE
 
@@ -52,9 +54,7 @@ class ShellDump():
                 Header= "".join("\\x%s"%Header[i:i+2] for i in range(0, len(Header), 2))
                 Header= "".join('\n"%s"'%Header[i:i+56] for i in range(0, len(Header),56))   
                 with open(self.File3,'w')as file: 
-                     file.write(Header) 
-                with open (self.File3,'r')as test:
-                      self.test= test.read()
+                     file.write(Header)   
 if __name__=="__main__": 
        ShellDump()
         
