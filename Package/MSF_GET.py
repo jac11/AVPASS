@@ -9,6 +9,7 @@ import secrets
 class _MSF_Call:
     def __init__(self):
         self._Features()
+        self.DecodeShell()
     def _Features(self,**kwargs):
         if self.args.assembly  :
             with open (os.getcwd()+'/Package/Template/FileNameObjectShellCode','rt') as TEXT:
@@ -26,7 +27,7 @@ class _MSF_Call:
                     Shell = Shell.write(str("".join(Text))) 
             else:        
                 with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:
-                    if self.args.load:
+                    if self.args.load :
                         Shell.write('ShellCode = b""\n')
                     else:    
                         Shell.write('ShellCode = b""\n')  
@@ -41,8 +42,8 @@ class _MSF_Call:
                         else:
                              Shell.write(CompleteShell)   
                     else:
-                        pass   
-                      
+                        pass 
+
 if __name__=='__main__':
    _MSF_Call()   
 
@@ -59,7 +60,7 @@ class Xor_class :
              with open (os.getcwd()+'/Package/Template/TempPayloadLoader.txt','r') as payload:
                 if self.args.P_base64:
                     payload = payload.read()
-                    payload = base64.b64encode(payload.encode())
+                    payload = base64.b64encode(payload.encode())    
                 else:
                     payload = bytes(payload.read().encode()) 
         else:         
@@ -70,12 +71,14 @@ class Xor_class :
                 else:
                     payload = bytes(payload.read().encode())   
         Value_Key =  secrets.token_bytes(len(payload))
+
         if self.args.Key_base64:
            Value_Key = base64.b64encode(Value_Key)
         self.payload = payload
         self.Value_Key = Value_Key
-    def Xor_Process(self,**kwargs):
 
+    def Xor_Process(self,**kwargs):
+       
         if self.args.Key_base64: 
             self.Value_Key = base64.b64decode(self.Value_Key)  
         self.Xor_Payload = bytes([ I  ^ L for I , L in zip(self.payload ,self.Value_Key) ])

