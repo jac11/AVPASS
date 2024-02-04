@@ -58,6 +58,7 @@ class Main_Proecess:
         parser.add_argument("-O","--output"     ,action=None          ,required=True,help ="Specify the output file for the encrypted Payload") 
         parser.add_argument("-L","--load"       , action='store_true' ,required=False,help ="Specify the output file for the encrypted Payload")
         parser.add_argument('-A',"--assembly"   , action='store_true' ,help ="  file has assembly code  ")
+        parser.add_argument('-D',"--decode"   , action='store_true' ,help ="  file has assembly code  ")
 
         self.args = parser.parse_args()       
 
