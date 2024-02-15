@@ -11,6 +11,12 @@ class _MSF_Call:
         self._Features()
         self.DecodeShell()
     def _Features(self,**kwargs):
+        if (self.args.decode and self.args.exploit) and not (self.args.assembly) :
+            with open (self.args.exploit,'rt') as TEXT:
+                Text = TEXT.readlines()
+                Text = "\n".join(re.findall('"+.+"',"".join(Text[1:])))
+            with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as TEXT:
+                TEXT.write(Text)
         if self.args.assembly  :
             with open (os.getcwd()+'/Package/Template/FileNameObjectShellCode','rt') as TEXT:
                 Text = TEXT.readlines()
@@ -20,18 +26,21 @@ class _MSF_Call:
                 else:    
                     Shell.write('    ShellCode = b""\n')         
         else:
-            with open (self.args.exploit,'rt') as TEXT:
-                Text = TEXT.readlines()
-            if ('\\x') not in Text  and not ( self.args.load) :
-                with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:  
-                    Shell = Shell.write(str("".join(Text))) 
-            else:        
-                with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:
-                    if self.args.load :
-                        Shell.write('ShellCode = b""\n')
-                    else:    
-                        Shell.write('ShellCode = b""\n')  
-        if self.args.load or "\\x" in Text :                                            
+            if self.args.decode:
+                 pass
+            else:     
+                with open (self.args.exploit,'rt') as TEXT:
+                    Text = TEXT.readlines()
+                if ('\\x' not in Text ) and not ( self.args.load) :
+                    with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:  
+                        Shell = Shell.write(str("".join(Text))) 
+                else:          
+                    with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:
+                        if self.args.load :
+                                Shell.write('ShellCode = b""\n')
+                        else:    
+                                Shell.write('ShellCode = b""\n')  
+        if (self.args.load or "\\x" in Text ) and not (self.args.decode):                                            
             for L in Text[1:] :
                 Find_Str = re.findall('"+.+"',L)
                 CompleteShell = 'ShellCode += b'+str("".join(Find_Str).replace('[]','',1))+'\n'

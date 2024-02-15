@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import re
 import os
 import shutil
 import string
@@ -28,17 +28,12 @@ class RandomVar:
             def EncodeShell():  
                 import secrets        
                 with open (os.getcwd()+'/Package/Template/ShellCode.txt','rt') as DecodeTEXT:
-                    DecodeTEXTRead = DecodeTEXT.read().replace('ShellCode','    _'+self.ListVar[15],1).replace('ShellCode','_'+self.ListVar[15])
-                with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as DecodeTEXT:  
-                    DecodeTEXT = DecodeTEXT.write(DecodeTEXTRead)
-                with open (os.getcwd()+'/Package/Template/ShellCode.txt','rt') as DecodeTEXT:
-                    DecodeTEXTRead = bytes(DecodeTEXT.read().encode())  
+                    DecodeTEXT = DecodeTEXT.read()
+                    DecodeTEXTRead = bytes.fromhex( DecodeTEXT.replace('"','').replace('\\x', ''))
                 self.ValueKeyShell =  secrets.token_bytes(len(DecodeTEXTRead)) 
                 self.ShellDeCode = bytes([ D  ^ L for D , L in zip(DecodeTEXTRead  ,self.ValueKeyShell) ])  
-                    
             EncodeShell()                   
     def RandomName(self,**kwargs): 
-
         CopyShellHolder = shutil.copy(os.getcwd()+'/Package/Template/TempPayload.txt',os.getcwd()+'/Package/Template/TempPayloadLoader.txt')
         FShellHplder = os.getcwd()+'/Package/Template/TempPayloadLoader.txt'
         for line in fileinput.FileInput(FShellHplder,inplace=1):
@@ -78,7 +73,7 @@ class RandomVar:
             if self.args.decode and '_1b' in line:
                 line = line.replace(
                 '_1b','Shell = '+str(self.ShellDeCode)+'\n'+'    Key2 = '+str(self.ValueKeyShell)+'\n'\
-                +'    _'+self.ListVar[15]+' = bytes([ Z ^ C for Z , C in zip(Shell, Key2)]).decode()\n',1)
+                +'    _'+self.ListVar[15]+' = bytes([ Z ^ C for Z , C in zip(Shell, Key2)])\n',1)
             else:    
                 line = line.replace('_1b','_'+self.ListVar[15]) 
             print(line,end=''),  
