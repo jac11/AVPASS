@@ -39,9 +39,9 @@ class RandomVar:
         for line in fileinput.FileInput(FShellHplder,inplace=1):
             if 'class' in line:
                 line.replace('():','').replace('class ','')
-                line = line.replace(line,'class '+'c'+self.ListVar[0]+' '+ '() :\n')
-            elif '_1()' in line:
-                line = line.replace(line,'   c'+self.ListVar[0]+'()') 
+                line = line.replace(line,'class '+'c'+self.ListVar[0]+' '+ '() :\n')   
+            elif "Popen([_1()],shell=True,stderr=PIPE,stdout=PIPE)" in line:
+                line = line.replace(line,'    Popen([c'+self.ListVar[0]+'()'+"],shell=True,stderr=PIPE,stdout=PIPE)")
             elif '_2' in line:
                 line = line.replace('_2','_'+self.ListVar[1])  
             elif '_3' in line :
