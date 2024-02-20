@@ -5,7 +5,7 @@ import ctypes.wintypes as wt
 from subprocess import Popen ,PIPE
 
 class _1():
-    _16  =   b""
+    _1b  =   b""
     _2 = 0x00040000
     _3 = 0x00000008
     _4 = 0x000028
