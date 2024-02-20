@@ -21,10 +21,15 @@ class _MSF_Call:
             with open (os.getcwd()+'/Package/Template/FileNameObjectShellCode','rt') as TEXT:
                 Text = TEXT.readlines()
             with open (os.getcwd()+'/Package/Template/ShellCode.txt','wt') as Shell:
-                if self.args.load:
+                if self.args.load and not(self.args.decode):
                     Shell.write('ShellCode = b""\n')
+                elif self.args.decode:
+                    Text = "\n".join(re.findall('"+.+"',"".join(Text[1:])))
+                    Text = Shell.write(Text)    
+
                 else:    
-                    Shell.write('    ShellCode = b""\n')         
+                    Shell.write('ShellCode = b""\n')   
+
         else:
             if self.args.decode:
                  pass
@@ -40,7 +45,7 @@ class _MSF_Call:
                                 Shell.write('ShellCode = b""\n')
                         else:    
                                 Shell.write('ShellCode = b""\n')  
-        if (self.args.load or "\\x" in Text ) and not (self.args.decode):                                            
+        if (self.args.load or "\\x" in Text or self.args.assembly) and not (self.args.decode):                                            
             for L in Text[1:] :
                 Find_Str = re.findall('"+.+"',L)
                 CompleteShell = 'ShellCode += b'+str("".join(Find_Str).replace('[]','',1))+'\n'
