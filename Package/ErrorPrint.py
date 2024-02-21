@@ -6,12 +6,12 @@ class ErrorPrint:
         self.Error()
         self.Print()
     def Error(self,**kwargs):
-        with open ('Package/Template/rr.txt','r') as r :
+        with open ('Package/Template/Banner.txt','r') as r :
             print(r.read())
         if "No such file or directory" in str(self.ErrorCommand):
             print("⚠️  No such file or directory : "+str(self.ErrorCommand).split(':')[1].replace('/','',1) )
     def INFO(self,**kwargs):
-        with open ('Package/Template/rr.txt','r') as r :
+        with open ('Package/Template/Banner.txt','r') as r :
             print(r.read())   
         if self.args.exploit:
             time.sleep(.20)
