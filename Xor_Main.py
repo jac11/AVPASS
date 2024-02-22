@@ -12,7 +12,7 @@ class Main_Proecess:
 
     def _Call_Code(self):
         try:
-            
+            ErrorPrint.CheckArgs(self,args=self._arg_Parse)
             if self.args.exploit and not self.args.assembly:
 
                 from Package.MSF_GET import _MSF_Call
